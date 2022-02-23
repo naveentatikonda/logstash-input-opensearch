@@ -16,6 +16,8 @@ Gem::Specification.new do |s|
   # Tests
   s.test_files = s.files.grep(%r{^(test|spec|features)/})
 
+  s.cert_chain  = ['certs/opensearch-rubygems.pem']
+
   # Special flag to let us know this is actually a logstash plugin
   s.metadata = { "logstash_plugin" => "true", "logstash_group" => "input" }
 
@@ -25,7 +27,7 @@ Gem::Specification.new do |s|
   s.add_runtime_dependency 'logstash-mixin-event_support', '~> 1.0'
   s.add_runtime_dependency "logstash-mixin-validator_support", '~> 1.0'
 
-  s.add_runtime_dependency 'elasticsearch', '>= 7.14.0' # LS >= 6.7 and < 7.14 all used version 5.0.5
+  #s.add_runtime_dependency 'elasticsearch', '>= 7.14.0' # LS >= 6.7 and < 7.14 all used version 5.0.5
 
   s.add_runtime_dependency 'tzinfo'
   s.add_runtime_dependency 'tzinfo-data'
@@ -38,4 +40,5 @@ Gem::Specification.new do |s|
   s.add_development_dependency 'timecop'
   s.add_development_dependency 'cabin', ['~> 0.6']
   s.add_development_dependency 'webrick'
+  s.add_development_dependency 'opensearch-ruby'
 end

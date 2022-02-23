@@ -15,6 +15,7 @@ describe LogStash::Inputs::OpenSearch do
 
   before(:each) do
     @es = OpenSearchHelper.get_client(client_options)
+    #@es = OpenSearchHelper.get_client
     # Delete all templates first.
     # Clean OpenSearch of data before we start.
     @es.indices.delete_template(:name => "*")
@@ -54,13 +55,16 @@ describe LogStash::Inputs::OpenSearch do
   end
 
   describe 'against a secured opensearch', :secure_integration => true do
-    let(:user) { ENV['ELASTIC_USER'] || 'simpleuser' }
-    let(:password) { ENV['ELASTIC_PASSWORD'] || 'abc123' }
+    let(:user) { ENV['ELASTIC_USER'] || 'admin' }
+    let(:password) { ENV['ELASTIC_PASSWORD'] || 'admin' }
     let(:ca_file) { "spec/fixtures/test_certs/ca.crt" }
+    #let(:ca_file) { "certs/opensearch-rubygems.pem" }
 
     let(:client_options) { { :ca_file => ca_file, :user => user, :password => password } }
+    #let(:client_options) { { :user => user, :password => password } }
 
     let(:config) { super().merge('user' => user, 'password' => password, 'ssl' => true, 'ca_file' => ca_file) }
+    #let(:config) { super().merge('user' => user, 'password' => password, 'ssl' => true) }
 
     it_behaves_like 'an opensearch index plugin'
 

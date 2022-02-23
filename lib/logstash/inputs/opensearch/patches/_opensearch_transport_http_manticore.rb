@@ -1,9 +1,10 @@
 # encoding: utf-8
 require "opensearch"
 require "opensearch/transport/transport/http/manticore"
+#require "logstash/inputs/opensearch"
 
-opensearch_client_version = Gem.loaded_specs['opensearch-transport'].version
-if opensearch_client_version >= Gem::Version.new('7.2') && opensearch_client_version < Gem::Version.new('7.16')
+#opensearch_client_version = Gem.loaded_specs['elasticsearch-transport'].version
+#if opensearch_client_version >= Gem::Version.new('7.2') && opensearch_client_version < Gem::Version.new('7.16')
   # opensearch-transport 7.2.0 - 7.14.0 had a bug where setting http headers
   #   OpenSearch::Client.new ..., transport_options: { headers: { 'Authorization' => ... } }
   # would be lost https://github.com/elastic/elasticsearch-ruby/issues/1428
@@ -40,4 +41,4 @@ if opensearch_client_version >= Gem::Version.new('7.2') && opensearch_client_ver
       end
     end
   end
-end
+#end

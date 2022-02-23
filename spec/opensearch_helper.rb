@@ -1,7 +1,11 @@
+require "logstash/inputs/opensearch"
+require "faraday"
+require "opensearch"
+
 module OpenSearchHelper
   def self.get_host_port
     if ENV["INTEGRATION"] == "true" || ENV["SECURE_INTEGRATION"] == "true"
-      "opensearch:9200"
+      "integration:9200"
     else
       "localhost:9200" # for local running integration specs outside docker
     end
@@ -15,8 +19,11 @@ module OpenSearchHelper
 
     if options[:ca_file]
       ssl_opts = { ca_file: options[:ca_file], version: 'TLSv1.2', verify: false }
+      #ssl_opts = { verify: false }
       host_opts[:scheme] = 'https'
     end
+#     ssl_opts = { verify: false }
+#     host_opts[:scheme] = 'https'
 
     if options[:user] && options[:password]
       host_opts[:user] = options[:user]
@@ -28,14 +35,12 @@ module OpenSearchHelper
                               transport_class: OpenSearch::Transport::Transport::HTTP::Faraday)
   end
 
+#   def self.get_client
+#       OpenSearch::Client.new(:hosts => [get_host_port])
+#   end
+
   def self.doc_type
-    if OpenSearchHelper.opensearch_version_satisfies?(">=8")
-      nil
-    elsif OpenSearchHelper.opensearch_version_satisfies?(">=7")
-      "_doc"
-    else
-      "doc"
-    end
+  "_doc"
   end
 
   def self.index_doc(opensearch, params)
