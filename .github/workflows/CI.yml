@@ -14,7 +14,7 @@ jobs:
         logstash: [ "7.16.3" ]
         opendistro: [ "1.13.3" ]
         integration: [ true ]
-        secure: [ false ]
+        secure: [ false, true ]
     name: Build and Test logstash-input-opensearch
     runs-on: ubuntu-latest
     env:
@@ -26,10 +26,30 @@ jobs:
       - name: Checkout plugin
         uses: actions/checkout@v1
 
-      - name: Build and pull docker files
+      - name: Build and pull docker files for OpenDistro-${{ matrix.opendistro }}-security-${{ matrix.secure }} for logstash ${{ matrix.logstash }}
         run: |
           ./.ci/docker-setup.sh
 
-      - name: Run integration tests
+      - name: Run integration tests against OpenDistro-${{ matrix.opendistro }}-security-${{ matrix.secure }} for logstash ${{ matrix.logstash }}
+        run: |
+          ./.ci/docker-run.sh
+
+  Unit-test:
+    strategy:
+      matrix:
+        logstash: [ "7.16.3" ]
+    name: Unit Test logstash-input-opensearch
+    runs-on: ubuntu-latest
+    env:
+      LOGSTASH_VERSION: ${{ matrix.logstash }}
+
+    steps:
+      - name: Checkout plugin
+        uses: actions/checkout@v1
+
+      - name: Build and pull docker files for unit tests with logstash ${{ matrix.logstash }}
+        run: |
+          ./.ci/docker-setup.sh
+      - name: Run unit tests
         run: |
           ./.ci/docker-run.sh
