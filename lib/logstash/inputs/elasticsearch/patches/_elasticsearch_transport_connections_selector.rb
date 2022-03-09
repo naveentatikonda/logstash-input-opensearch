@@ -1,4 +1,4 @@
-require 'elasticsearch'
+require 'opensearch'
 require 'elasticsearch/transport/transport/connections/selector'
 
   # elasticsearch-transport versions prior to 7.2.0 suffered of a race condition on accessing

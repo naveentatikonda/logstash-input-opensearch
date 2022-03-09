@@ -4,7 +4,7 @@ require "logstash/plugin"
 require "logstash/inputs/elasticsearch"
 require_relative "../../../spec/es_helper"
 
-describe LogStash::Inputs::Elasticsearch do
+describe LogStash::Inputs::OpenSearch do
 
   let(:config)   { { 'hosts' => [ESHelper.get_host_port],
                      'index' => 'logs',
@@ -73,7 +73,7 @@ describe LogStash::Inputs::Elasticsearch do
       let(:queue) { [] }
 
       it "fails to run the plugin" do
-        expect { plugin.register }.to raise_error Elasticsearch::Transport::Transport::Errors::Unauthorized
+        expect { plugin.register }.to raise_error OpenSearch::Transport::Transport::Errors::Unauthorized
       end
     end
 

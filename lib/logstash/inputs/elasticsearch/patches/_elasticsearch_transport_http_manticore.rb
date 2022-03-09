@@ -1,5 +1,5 @@
 # encoding: utf-8
-require "elasticsearch"
+require "opensearch"
 require "elasticsearch/transport/transport/http/manticore"
 
 

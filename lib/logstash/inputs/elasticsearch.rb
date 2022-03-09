@@ -9,7 +9,7 @@ require 'logstash/plugin_mixins/ecs_compatibility_support'
 require 'logstash/plugin_mixins/ecs_compatibility_support/target_check'
 require "base64"
 
-require "elasticsearch"
+require "opensearch"
 require "elasticsearch/transport/transport/http/manticore"
 require_relative "elasticsearch/patches/_elasticsearch_transport_http_manticore"
 require_relative "elasticsearch/patches/_elasticsearch_transport_connections_selector"
@@ -68,7 +68,7 @@ require_relative "elasticsearch/patches/_elasticsearch_transport_connections_sel
 # Further documentation describing this syntax can be found https://github.com/jmettraux/rufus-scheduler#parsing-cronlines-and-time-strings[here].
 #
 #
-class LogStash::Inputs::Elasticsearch < LogStash::Inputs::Base
+class LogStash::Inputs::OpenSearch < LogStash::Inputs::Base
 
   include LogStash::PluginMixins::ECSCompatibilitySupport(:disabled, :v1, :v8 => :v1)
   include LogStash::PluginMixins::ECSCompatibilitySupport::TargetCheck
@@ -77,7 +77,7 @@ class LogStash::Inputs::Elasticsearch < LogStash::Inputs::Base
 
   extend LogStash::PluginMixins::ValidatorSupport::FieldReferenceValidationAdapter
 
-  config_name "elasticsearch"
+  config_name "opensearch"
 
   # List of elasticsearch hosts to use for querying.
   # Each host can be either IP, HOST, IP:port or HOST:port.
@@ -196,7 +196,7 @@ class LogStash::Inputs::Elasticsearch < LogStash::Inputs::Base
     super(params)
 
     if docinfo_target.nil?
-      @docinfo_target = ecs_select[disabled: '@metadata', v1: '[@metadata][input][elasticsearch]']
+      @docinfo_target = ecs_select[disabled: '@metadata', v1: '[@metadata][input][opensearch]']
     end
   end
 
@@ -234,10 +234,10 @@ class LogStash::Inputs::Elasticsearch < LogStash::Inputs::Base
 
     transport_options[:proxy] = @proxy.to_s if @proxy && !@proxy.eql?('')
 
-    @client = Elasticsearch::Client.new(
+    @client = OpenSearch::Client.new(
       :hosts => hosts,
       :transport_options => transport_options,
-      :transport_class => ::Elasticsearch::Transport::Transport::HTTP::Manticore,
+      :transport_class => ::OpenSearch::Transport::Transport::HTTP::Manticore,
       :ssl => ssl_options
     )
     test_connection!
@@ -477,7 +477,7 @@ class LogStash::Inputs::Elasticsearch < LogStash::Inputs::Base
 
   def test_connection!
     @client.ping
-  rescue Elasticsearch::UnsupportedProductError
+  rescue OpenSearch::UnsupportedProductError
     raise LogStash::ConfigurationError, "Could not connect to a compatible version of Elasticsearch"
   end
 

@@ -23,9 +23,9 @@ module ESHelper
       host_opts[:password] = options[:password]
     end
 
-    Elasticsearch::Client.new(hosts: [host_opts],
+    OpenSearch::Client.new(hosts: [host_opts],
                               transport_options: { ssl: ssl_opts },
-                              transport_class: Elasticsearch::Transport::Transport::HTTP::Faraday)
+                              transport_class: OpenSearch::Transport::Transport::HTTP::Faraday)
   end
 
   def self.doc_type

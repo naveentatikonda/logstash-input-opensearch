@@ -2,7 +2,7 @@
 require "logstash/devutils/rspec/spec_helper"
 require "logstash/devutils/rspec/shared_examples"
 require "logstash/inputs/elasticsearch"
-require "elasticsearch"
+require "opensearch"
 require "timecop"
 require "stud/temporary"
 require "time"
@@ -13,7 +13,7 @@ require "uri"
 
 require 'logstash/plugin_mixins/ecs_compatibility_support/spec_helper'
 
-describe LogStash::Inputs::Elasticsearch, :ecs_compatibility_support do
+describe LogStash::Inputs::OpenSearch, :ecs_compatibility_support do
 
   let(:plugin) { described_class.new(config) }
   let(:queue) { Queue.new }
