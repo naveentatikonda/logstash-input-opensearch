@@ -21,6 +21,11 @@ module OpenSearchHelper
       host_opts[:scheme] = 'https'
     end
 
+    if options[:ssl] && !options[:ssl_certificate_verification]
+      ssl_opts = { verify: false }
+      host_opts[:scheme] = 'https'
+    end
+
     if options[:user] && options[:password]
       host_opts[:user] = options[:user]
       host_opts[:password] = options[:password]

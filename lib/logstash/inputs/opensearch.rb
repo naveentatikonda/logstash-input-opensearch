@@ -166,6 +166,8 @@ class LogStash::Inputs::OpenSearch < LogStash::Inputs::Base
   # SSL
   config :ssl, :validate => :boolean, :default => false
 
+  config :ssl_certificate_verification, :validate => :boolean, :default => true
+
   # SSL Certificate Authority file in PEM encoded format, must also include any chain certificates as necessary 
   config :ca_file, :validate => :path
 
@@ -347,7 +349,11 @@ class LogStash::Inputs::OpenSearch < LogStash::Inputs::Base
   end
 
   def setup_ssl
-    @ssl && @ca_file ? { :ssl  => true, :ca_file => @ca_file } : {}
+    @ssl = true if @hosts.any? { |h| URI(h).scheme == "https" }
+    return { :ssl => false } if @ssl == false
+    return { :ssl  => true, :ca_file => @ca_file } if @ssl && @ca_file
+    return { :ssl  => true, :verify => false } if @ssl && !@ssl_certificate_verification
+    return { :ssl => true }
   end
 
   def setup_hosts
