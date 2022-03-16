@@ -358,8 +358,9 @@ class LogStash::Inputs::OpenSearch < LogStash::Inputs::Base
     @hosts = Array(@hosts).map { |host| host.to_s } # potential SafeURI#to_s
     if @ssl
       @hosts.map do |h|
-        host, port = h.split(":")
-        { :host => host, :scheme => 'https', :port => port }
+        parse_uri = URI(h)
+
+        { :host => parse_uri.hostname, :scheme => 'https', :port => parse_uri.port }
       end
     else
       @hosts
