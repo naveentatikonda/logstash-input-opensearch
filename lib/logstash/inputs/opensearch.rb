@@ -212,7 +212,9 @@ class LogStash::Inputs::OpenSearch < LogStash::Inputs::Base
 
     hosts = setup_hosts
     ssl_options = setup_ssl
-
+    puts "Naveen: #{ssl_options}"
+    puts "Hosts: #{hosts}"
+    #puts "Hosts: #{hosts[0][:scheme]}"
     @logger.warn "Supplied proxy setting (proxy => '') has no effect" if @proxy.eql?('')
 
     transport_options[:proxy] = @proxy.to_s if @proxy && !@proxy.eql?('')
@@ -349,15 +351,40 @@ class LogStash::Inputs::OpenSearch < LogStash::Inputs::Base
   end
 
   def setup_ssl
-    @ssl && @ca_file ? { :ssl  => true, :ca_file => @ca_file } : {}
-    #@ssl && !@ca_file ? { :ssl  => true, :verify => false } : {}
-    @ssl && !@ssl_certificate_verification ? { :ssl  => true, :verify => false } : {}
+
+#     hosts_list = setup_hosts
+#     hosts_list.each do |host|
+#       puts "Host is #{host}"
+#       if host[:scheme] == "https"
+#         ssl_flag = true
+#         puts "Condition passed"
+#       end
+#     end
+#    ssl_flag = true if setup_hosts.any? {|h| h[:scheme] == "https"}
+
+    #ssl_flag = @ssl
+    @ssl = true if @hosts.any? {|h| URI(h).scheme == "https"}
+    puts "Naveen: ssl is #{@ssl}"
+    puts "Naveen: ssl_certificate_verification is #{@ssl_certificate_verification}"
+    return { :ssl => false } if @ssl == false
+    return { :ssl  => true, :ca_file => @ca_file } if @ssl && @ca_file
+    return { :ssl  => true, :verify => false } if @ssl && !@ssl_certificate_verification
+    return {:ssl => true}
+    #@ssl && @ca_file ? { :ssl  => true, :ca_file => @ca_file } : {}
+    #@ssl && !@ssl_certificate_verification ? { :ssl  => true, :verify => false } : {}
+#    return {:ssl => true}
+#     @ssl && !@ca_file ? { :ssl  => true, :verify => false } : {}
+#     @ssl && !@ssl_certificate_verification ? { :ssl  => true, :verify => false } : {}
+
   end
 
   def setup_hosts
     @hosts = Array(@hosts).map { |host| host.to_s } # potential SafeURI#to_s
     if @ssl
       @hosts.map do |h|
+        puts "Naveen: host is #{h}"
+        #parse_uri = URI(h)
+        #{ :host => parse_uri.hostname, :scheme => 'https', :port => parse_uri.port }
         host, port = h.split(":")
         { :host => host, :scheme => 'https', :port => port }
       end
