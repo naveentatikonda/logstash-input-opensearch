@@ -60,9 +60,11 @@ describe LogStash::Inputs::OpenSearch do
     let(:user) { ENV['USER'] || 'admin' }
     let(:password) { ENV['PASSWORD'] || 'admin' }
 
-    let(:client_options) { { :user => user, :password => password, :ssl => {:enabled => true, :verify => false} } }
+#     let(:client_options) { { :user => user, :password => password, :ssl => {:enabled => true, :verify => false} } }
+let(:client_options) { {  :user => user, :password => password } }
+let(:config) { super().merge('user' => user, 'password' => password, 'ssl' => true) }
 
-    let(:config) { super().merge('user' => user, 'password' => password, 'ssl' => true, 'ssl_certificate_verification' => false) }
+#     let(:config) { super().merge('user' => user, 'password' => password, 'ssl' => true, 'ssl_certificate_verification' => false) }
 
     it_behaves_like 'an opensearch index plugin'
 

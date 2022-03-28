@@ -213,6 +213,7 @@ class LogStash::Inputs::OpenSearch < LogStash::Inputs::Base
     hosts = setup_hosts
     ssl_options = setup_ssl
 
+    puts "Naveen: SSL Options #{ssl_options}"
     @logger.warn "Supplied proxy setting (proxy => '') has no effect" if @proxy.eql?('')
 
     transport_options[:proxy] = @proxy.to_s if @proxy && !@proxy.eql?('')
@@ -349,11 +350,14 @@ class LogStash::Inputs::OpenSearch < LogStash::Inputs::Base
   end
 
   def setup_ssl
-    @ssl = true if @hosts.any? { |h| URI(h).scheme == "https" }
-    return { :ssl => false } if @ssl == false
-    return { :ssl  => true, :ca_file => @ca_file } if @ssl && @ca_file
-    return { :ssl  => true, :verify => false } if @ssl && !@ssl_certificate_verification
-    return { :ssl => true }
+#     @ssl = true if @hosts.any? { |h| URI(h).scheme == "https" }
+#     return { :ssl => false } if @ssl == false
+#     return { :ssl  => true, :ca_file => @ca_file } if @ssl && @ca_file
+#     return { :ssl  => true, :verify => false } if @ssl && !@ssl_certificate_verification
+#     return { :ssl => true, :verify => true }
+       return { :ssl  => true, :ca_file => @ca_file } if @ssl && @ca_file
+       return { :ssl  => true, :verify => false } if @ssl
+
   end
 
   def setup_hosts

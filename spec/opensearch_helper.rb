@@ -16,20 +16,25 @@ module OpenSearchHelper
     host_opts = { host: host, port: port, scheme: 'http' }
     ssl_opts = {}
 
+     if options[:user] && options[:password]
+       host_opts[:user] = options[:user]
+       host_opts[:password] = options[:password]
+       host_opts[:scheme] = 'https'
+       ssl_opts = { verify: false }
+     end
+
     if options[:ca_file]
       ssl_opts = { ca_file: options[:ca_file], version: 'TLSv1.2', verify: false }
       host_opts[:scheme] = 'https'
     end
 
-    if options[:ssl] && !options[:ssl_certificate_verification]
-      ssl_opts = { verify: false }
-      host_opts[:scheme] = 'https'
-    end
 
-    if options[:user] && options[:password]
-      host_opts[:user] = options[:user]
-      host_opts[:password] = options[:password]
-    end
+#     if options[:ssl] && !options[:ssl_certificate_verification]
+#       ssl_opts = { verify: false }
+#       host_opts[:scheme] = 'https'
+#     end
+
+
 
     OpenSearch::Client.new(hosts: [host_opts],
                               transport_options: { ssl: ssl_opts },
