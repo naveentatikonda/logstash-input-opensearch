@@ -20,7 +20,7 @@ module OpenSearchHelper
       host_opts[:user] = options[:user]
       host_opts[:password] = options[:password]
       host_opts[:scheme] = 'https'
-      ssl_opts = { verify: false }
+      #ssl_opts = { verify: false }
     end
 
     if options[:ca_file]
